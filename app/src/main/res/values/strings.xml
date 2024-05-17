@@ -11,6 +11,16 @@
 
     <string name="icon_discount_description">Icon discount</string>
     <string name="icon_minus_description">Icon minus</string>
+    <string name="icon_back_description">Icon navigation back</string>
+
+    <string name="on_basket_product_text_button">В корзину за</string>
+
+    <string name="measure">Вес</string>
+    <string name="energy">Энерг. ценность</string>
+    <string name="proteins">Белки</string>
+    <string name="fats">Жиры</string>
+    <string name="carbohydrates">Углеводы</string>
+    <string name="calories">ккал</string>
 
     <string name="ruble">₽</string>
 

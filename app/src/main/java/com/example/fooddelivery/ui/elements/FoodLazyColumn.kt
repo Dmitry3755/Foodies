@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.navigation.NavController
 import com.example.domain.entities.Product
 import com.example.fooddelivery.R
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogCategoryViewModel
@@ -22,7 +23,8 @@ import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductVie
 
 @Composable
 fun FoodLazyColumn(
-    productViewModel: CatalogProductViewModel
+    productViewModel: CatalogProductViewModel,
+    navController: NavController,
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -33,10 +35,11 @@ fun FoodLazyColumn(
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacer_8)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacer_8)),
     ) {
-        items(productViewModel.productsFilterList.size) { index ->
+        items(productViewModel.getProductsFilterList().size) { index ->
             FoodLazyColumnItem(
                 index,
                 productViewModel,
+                navController
             )
         }
     }

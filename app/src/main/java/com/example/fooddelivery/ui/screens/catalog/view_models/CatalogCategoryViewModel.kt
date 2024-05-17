@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entities.Category
-import com.example.domain.entities.Product
 import com.example.domain.network.categories.use_case.GetAllCategoriesUseCase
-import com.example.domain.network.products.use_case.GetAllProductsUseCase
 import com.example.domain.utils.LoadingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +20,8 @@ class CatalogCategoryViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
-    var selectedCategoryButton: MutableState<Int> = mutableStateOf(0)
     var categoryList: MutableLiveData<List<Category>> = MutableLiveData()
+    var selectedCategoryButton: MutableState<Int> = mutableStateOf(0)
 
     fun getAllCategories() {
         getAllCategoriesUseCase.invoke().flowOn(Dispatchers.IO).onEach {

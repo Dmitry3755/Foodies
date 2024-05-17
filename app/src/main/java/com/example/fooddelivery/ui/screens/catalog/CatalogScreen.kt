@@ -22,6 +22,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.ui.elements.AppView
 import com.example.fooddelivery.ui.elements.BasketButton
@@ -33,7 +35,8 @@ import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductVie
 @Composable
 fun CatalogScreen(
     categoryViewModel: CatalogCategoryViewModel,
-    productViewModel: CatalogProductViewModel
+    productViewModel: CatalogProductViewModel,
+    navController: NavController
 ) {
 
     val configuration = LocalConfiguration.current
@@ -76,7 +79,8 @@ fun CatalogScreen(
         if (categoryViewModel.categoryList.value == null || productViewModel.productList.value == null) {
             CategoriesAppBar(configuration, categoryViewModel, mutableListOf())
             FoodLazyColumn(
-                productViewModel
+                productViewModel,
+                navController
             )
         } else {
             CategoriesAppBar(
@@ -85,16 +89,19 @@ fun CatalogScreen(
                 categoryViewModel.categoryList.value!!.toMutableList()
             )
             FoodLazyColumn(
-                productViewModel
+                productViewModel,
+                navController
             )
         }
-
-        BasketButton()
+        if (productViewModel.getBasketList().isNotEmpty()) {
+            BasketButton("1500", false, {})
+        }
     }
 }
 
 @Composable
 @Preview
 fun CatalogScreenPreview() {
-    CatalogScreen(viewModel(), viewModel())
+    val navController = rememberNavController()
+    CatalogScreen(viewModel(), viewModel(), navController)
 }

@@ -4,18 +4,12 @@
     android:viewportWidth="110"
     android:viewportHeight="44">
 
-    <!--  <group
-          android:name="logoGroup"
-          android:scaleX="0.6"
-          android:scaleY="0.24269663"
-          android:translateX="1"
-          android:translateY="13.5">-->
     <group
         android:name="logoGroup"
-        android:pivotX="41"
-        android:pivotY="21.25"
-        android:scaleX="0.1"
-        android:scaleY="0.05">
+        android:scaleX="0.6"
+        android:scaleY="0.24269663"
+        android:translateX="1"
+        android:translateY="13.5">
         <path
             android:fillColor="#ffffff"
             android:fillType="evenOdd"

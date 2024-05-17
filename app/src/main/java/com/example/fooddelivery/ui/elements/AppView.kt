@@ -49,8 +49,8 @@ fun AppView() {
             )
         }
         Icon(
-            modifier = Modifier.scale(2.6f),
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            modifier = Modifier.scale(2.4f),
+            painter = painterResource(id = R.drawable.ic_logo),
             contentDescription = stringResource(id = R.string.app_bar_logo_description),
             tint = MaterialTheme.colorScheme.primary
         )

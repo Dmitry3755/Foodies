@@ -17,3 +17,4 @@ val Gray = Color(0xFFF5F5F5)
 val Dark = Color(0xFF333333)
 
 val Discount = Color(0x60000000)
+val Divider = Color(0x20000000)
