@@ -5,4 +5,5 @@ import androidx.navigation.Navigation
 sealed class NavigationComponents(val route: String) {
     data object CatalogScreen : NavigationComponents("catalog_screen")
     data object ProductCardScreen : NavigationComponents("product_card_screen")
+    data object BasketScreen : NavigationComponents("basket_screen")
 }

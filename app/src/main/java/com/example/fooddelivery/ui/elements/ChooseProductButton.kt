@@ -14,28 +14,43 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.domain.entities.BasketItem
 import com.example.domain.entities.Product
 import com.example.fooddelivery.R
+import com.example.domain.entities.AppData
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductViewModel
 
 @Composable
 fun ChooseProductButton(
     currentProduct: Product,
-    productViewModel: CatalogProductViewModel
+    productViewModel: CatalogProductViewModel,
+    isBasket: Boolean
 ) {
-    val countCurrentProduct = remember {
-        mutableStateOf(0)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var countCurrentItemBasket by remember {
+        mutableStateOf(
+            productViewModel.getBasketList()
+                .first { basketItem: BasketItem -> basketItem.product!!.id == currentProduct.id }.count.value
+        )
+    }
+    val index = productViewModel.getBasketList().indexOf(productViewModel.getBasketList()
+        .first { basketItem: BasketItem -> basketItem.product!!.id == currentProduct.id })
+
+    AppData.basketList.value!![index].count.observe(lifecycleOwner) {
+        countCurrentItemBasket = it
     }
 
-    if (countCurrentProduct.value != 0)
+    if (countCurrentItemBasket != 0)
         Row(
             modifier = Modifier
                 .padding(end = dimensionResource(id = R.dimen.spacer_12))
@@ -50,14 +65,13 @@ fun ChooseProductButton(
                     .weight(0.3f)
                     .clickable(
                         onClick = {
-                            countCurrentProduct.value -= 1
                             productViewModel.reduceProductOnBasket(currentProduct)
                         },
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     )
                     .background(
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = if (isBasket) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_8))
                     ),
                 contentAlignment = Alignment.Center
@@ -77,7 +91,7 @@ fun ChooseProductButton(
             ) {
                 Text(
                     text = productViewModel.getBasketList()
-                        .first { basketItem: BasketItem -> basketItem.product!!.id == currentProduct.id }.count.toString(),
+                        .first { basketItem: BasketItem -> basketItem.product!!.id == currentProduct.id }.count.value!!.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
@@ -88,7 +102,6 @@ fun ChooseProductButton(
                     .fillMaxHeight()
                     .clickable(
                         onClick = {
-                            countCurrentProduct.value += 1
                             productViewModel.addProductOnBasket(
                                 currentProduct,
                                 false
@@ -98,7 +111,7 @@ fun ChooseProductButton(
                         indication = null
                     )
                     .background(
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = if (isBasket) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.radius_8))
                     ),
                 contentAlignment = Alignment.Center

@@ -19,18 +19,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.domain.entities.AppData
 import com.example.fooddelivery.R
 import com.example.fooddelivery.ui.elements.AppView
 import com.example.fooddelivery.ui.elements.BasketButton
 import com.example.fooddelivery.ui.elements.CategoriesAppBar
 import com.example.fooddelivery.ui.elements.FoodLazyColumn
+import com.example.fooddelivery.ui.navigation.NavigationComponents
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogCategoryViewModel
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun CatalogScreen(
@@ -40,17 +44,29 @@ fun CatalogScreen(
 ) {
 
     val configuration = LocalConfiguration.current
+    val owner: LifecycleOwner = LocalLifecycleOwner.current
     var categoryLoading by remember {
         mutableStateOf(categoryViewModel.categoryList.value)
     }
     var productLoading by remember {
         mutableStateOf(productViewModel.productList.value)
     }
-    val owner: LifecycleOwner = LocalLifecycleOwner.current
+    var changeCategory by remember {
+        mutableStateOf(categoryViewModel.selectedCategoryButton.value)
+    }
+    var price by remember {
+        mutableStateOf(
+            AppData.currentPrice.value
+        )
+    }
 
     LaunchedEffect(productLoading, categoryLoading) {
         categoryViewModel.getAllCategories()
         productViewModel.getAllProducts()
+    }
+
+    categoryViewModel.selectedCategoryButton.observe(owner) {
+        changeCategory = it
     }
 
     categoryViewModel.categoryList.observe(owner) {
@@ -59,12 +75,16 @@ fun CatalogScreen(
 
     productViewModel.productList.observe(owner) {
         productLoading = it
-        productViewModel.filterList(categoryViewModel.selectedCategoryButton.value)
+        productViewModel.filterList(categoryViewModel.selectedCategoryButton.value!!)
+    }
+
+    AppData.currentPrice.observe(owner) {
+        price = it
     }
 
     Column(
         modifier = Modifier
-            .fillMaxSize(1f)
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = dimensionResource(id = R.dimen.spacer_10))
     ) {
@@ -77,24 +97,59 @@ fun CatalogScreen(
             AppView()
         }
         if (categoryViewModel.categoryList.value == null || productViewModel.productList.value == null) {
-            CategoriesAppBar(configuration, categoryViewModel, mutableListOf())
-            FoodLazyColumn(
-                productViewModel,
-                navController
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.065f),
+            ) {
+                CategoriesAppBar(configuration, categoryViewModel, mutableListOf())
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.89f),
+            ) {
+                FoodLazyColumn(
+                    productViewModel,
+                    navController,
+                    0
+                )
+            }
+
         } else {
-            CategoriesAppBar(
-                configuration,
-                categoryViewModel,
-                categoryViewModel.categoryList.value!!.toMutableList()
-            )
-            FoodLazyColumn(
-                productViewModel,
-                navController
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.065f),
+            ) {
+
+                CategoriesAppBar(
+                    configuration,
+                    categoryViewModel,
+                    categoryViewModel.categoryList.value!!.toMutableList()
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.89f),
+            ) {
+                FoodLazyColumn(
+                    productViewModel,
+                    navController,
+                    changeCategory!!
+                )
+            }
         }
-        if (productViewModel.getBasketList().isNotEmpty()) {
-            BasketButton("1500", false, {})
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            BasketButton(
+                " " + "${(price!! / 100)}" + " " + stringResource(id = R.string.ruble),
+                false,
+                onClick = { navController.navigate(NavigationComponents.BasketScreen.route) }
+            )
         }
     }
 }

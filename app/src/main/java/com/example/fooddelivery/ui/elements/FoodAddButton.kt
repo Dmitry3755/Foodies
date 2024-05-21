@@ -1,8 +1,6 @@
 package com.example.fooddelivery.ui.elements
 
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -10,36 +8,51 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import com.example.domain.entities.BasketItem
 import com.example.domain.entities.Product
 import com.example.fooddelivery.R
-import com.example.fooddelivery.ui.model.AppData
+import com.example.domain.entities.AppData
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductViewModel
 import kotlin.math.roundToInt
 
 @Composable
 fun FoodAddButton(
     currentProduct: Product,
-    productViewModel: CatalogProductViewModel
+    productViewModel: CatalogProductViewModel,
+    changeCategory : Int
 ) {
-    var clickButtonState by remember {
-        mutableStateOf(0)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var countCurrentItemBasket by remember(changeCategory) {
+        mutableStateOf(false)
     }
 
-    if (clickButtonState == 0) {
+    var basketState by remember {
+        mutableStateOf(
+            AppData.basketList.value
+        )
+    }
+
+    AppData.basketList.observe(lifecycleOwner) {
+        basketState = it
+        if (basketState!!.isNotEmpty()) {
+            for (item in basketState!!) {
+                if (item.product!!.id == currentProduct.id) {
+                    countCurrentItemBasket = true
+                    break
+                }
+            }
+        }
+    }
+
+    if (!countCurrentItemBasket) {
         Button(
             modifier = Modifier
                 .padding(end = dimensionResource(id = R.dimen.spacer_12))
@@ -47,7 +60,6 @@ fun FoodAddButton(
                 .padding(vertical = dimensionResource(id = R.dimen.spacer_12)),
             onClick = {
                 productViewModel.addProductOnBasket(currentProduct, true)
-                clickButtonState = 1
             },
             colors = ButtonColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -79,6 +91,6 @@ fun FoodAddButton(
             }
         }
     } else {
-        ChooseProductButton(currentProduct, productViewModel)
+        ChooseProductButton(currentProduct, productViewModel, false)
     }
 }

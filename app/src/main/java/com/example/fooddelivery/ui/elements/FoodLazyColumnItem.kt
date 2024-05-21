@@ -42,6 +42,7 @@ fun FoodLazyColumnItem(
     index: Int,
     productViewModel: CatalogProductViewModel,
     navController: NavController,
+    changeCategory : Int
 ) {
 
     var currentProduct = productViewModel.getProductsFilterList()[index]
@@ -49,7 +50,7 @@ fun FoodLazyColumnItem(
     Card(
         modifier = Modifier
             .width(LocalConfiguration.current.screenWidthDp.dp / 2)
-            .height(LocalConfiguration.current.screenHeightDp.dp * 10 / 28)
+            .height(LocalConfiguration.current.screenHeightDp.dp * 35 / 100)
             .clickable(
                 onClick = {
                     navController.navigate(NavigationComponents.ProductCardScreen.route + "/${currentProduct.id}")
@@ -112,7 +113,8 @@ fun FoodLazyColumnItem(
             ) {
                 FoodAddButton(
                     currentProduct,
-                    productViewModel
+                    productViewModel,
+                    changeCategory
                 )
             }
         }

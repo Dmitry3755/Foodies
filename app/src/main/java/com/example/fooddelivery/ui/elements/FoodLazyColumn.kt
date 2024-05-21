@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,9 @@ import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductVie
 fun FoodLazyColumn(
     productViewModel: CatalogProductViewModel,
     navController: NavController,
+    changeCategory : Int
 ) {
+
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,12 +37,14 @@ fun FoodLazyColumn(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacer_8)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.spacer_8)),
+        state = rememberLazyGridState()
     ) {
         items(productViewModel.getProductsFilterList().size) { index ->
             FoodLazyColumnItem(
                 index,
                 productViewModel,
-                navController
+                navController,
+                changeCategory
             )
         }
     }

@@ -2,6 +2,7 @@ package com.example.fooddelivery.ui.elements
 
 import android.service.autofill.OnClickAction
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ fun BasketButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .padding(vertical = dimensionResource(id = R.dimen.spacer_20)),
         colors = ButtonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -34,7 +36,7 @@ fun BasketButton(
             disabledContentColor = MaterialTheme.colorScheme.onPrimary,
             disabledContainerColor = MaterialTheme.colorScheme.primary
         ),
-        shape = MaterialTheme.shapes.extraSmall,
+        shape = MaterialTheme.shapes.small,
         onClick = onClick
     ) {
         Row {

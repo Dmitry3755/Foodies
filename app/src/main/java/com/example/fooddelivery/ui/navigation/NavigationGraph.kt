@@ -6,6 +6,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fooddelivery.ui.screens.basket.BasketScreen
+import com.example.fooddelivery.ui.screens.basket.view_models.BasketViewModel
 import com.example.fooddelivery.ui.screens.catalog.CatalogScreen
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogCategoryViewModel
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductViewModel
@@ -16,7 +18,8 @@ import com.example.fooddelivery.ui.screens.product_card.view_models.ProductCardV
 fun NavigationGraph(
     catalogCategoryViewModel: CatalogCategoryViewModel,
     catalogProductViewModel: CatalogProductViewModel,
-    productCardViewModel: ProductCardViewModel
+    productCardViewModel: ProductCardViewModel,
+    basketViewModel: BasketViewModel
 ) {
 
     val navController = rememberNavController()
@@ -37,6 +40,13 @@ fun NavigationGraph(
             ProductCardScreen(
                 id = id.toInt(),
                 productCardViewModel = productCardViewModel,
+                navController = navController
+            )
+        }
+        composable(NavigationComponents.BasketScreen.route) {
+            BasketScreen(
+                basketViewModel = basketViewModel,
+                catalogProductViewModel = catalogProductViewModel,
                 navController = navController
             )
         }

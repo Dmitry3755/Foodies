@@ -21,7 +21,7 @@ class CatalogCategoryViewModel @Inject constructor(
 ) : ViewModel() {
 
     var categoryList: MutableLiveData<List<Category>> = MutableLiveData()
-    var selectedCategoryButton: MutableState<Int> = mutableStateOf(0)
+    var selectedCategoryButton: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getAllCategories() {
         getAllCategoriesUseCase.invoke().flowOn(Dispatchers.IO).onEach {
