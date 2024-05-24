@@ -44,9 +44,12 @@ fun FoodAddButton(
         basketState = it
         if (basketState!!.isNotEmpty()) {
             for (item in basketState!!) {
-                if (item.product!!.id == currentProduct.id) {
+                if (item.product!!.id == currentProduct.id && item.count.value!! > 0) {
                     countCurrentItemBasket = true
                     break
+                }
+                if(item.count.value!! ==  0) {
+                    countCurrentItemBasket = false
                 }
             }
         }

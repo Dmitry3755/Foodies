@@ -9,6 +9,7 @@ import com.example.domain.entities.Product
 import com.example.domain.network.products.use_case.GetAllProductsUseCase
 import com.example.domain.utils.LoadingStatus
 import com.example.domain.entities.AppData
+import com.example.fooddelivery.ui.base.BaseProductViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CatalogProductViewModel @Inject constructor(
     private val getAllProductsUseCase: GetAllProductsUseCase,
-) : ViewModel() {
+) : BaseProductViewModel() {
 
     var internalProductList: MutableLiveData<List<Product>> = MutableLiveData()
     var productList: LiveData<List<Product>> = internalProductList
@@ -30,10 +31,6 @@ class CatalogProductViewModel @Inject constructor(
                 internalProductList.postValue(it.result)
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun getProductsFilterList(): MutableList<Product> {
-        return AppData.productsFilterList
     }
 
     fun getBasketList(): MutableList<BasketItem> {
@@ -49,11 +46,11 @@ class CatalogProductViewModel @Inject constructor(
     fun addProductOnBasket(product: Product, addNew: Boolean) {
         if (addNew) {
             AppData.basketList.value!!.add(BasketItem(MutableLiveData(1), product))
-            AppData.basketList.postValue(AppData.basketList.value)
+            AppData.basketList.value = AppData.basketList.value
         } else {
             AppData.basketList.value!!.forEach {
                 if (it.product == product) {
-                    it.count.postValue(it.count.value!! + 1)
+                    it.count.value = it.count.value!! + 1
                 }
             }
         }
@@ -63,15 +60,16 @@ class CatalogProductViewModel @Inject constructor(
     fun reduceProductOnBasket(product: Product) {
         AppData.basketList.value!!.forEach {
             if (it.product == product && it.count.value!! <= 1) {
-                AppData.basketList.value!!.removeAt(AppData.basketList.value!!.indexOf(AppData.basketList.value!!.first { basketItem: BasketItem -> basketItem.product == product }))
+                var a= AppData.basketList.value!!.indexOf(AppData.basketList.value!!.first { basketItem: BasketItem -> basketItem.product == product })
+                AppData.basketList.value!![a].count.value = 0
             } else if (it.product == product && it.count.value!! > 1) {
-                it.count.postValue(it.count.value!! - 1)
+                it.count.value = it.count.value!! - 1
             }
         }
         sumAllBasketItem()
     }
 
-    fun sumAllBasketItem() {
+    private fun sumAllBasketItem() {
         var sum = 0
         for (item in AppData.basketList.value!!) {
             sum += item.count.value!! * item.product!!.priceCurrent.toInt()

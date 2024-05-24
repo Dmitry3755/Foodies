@@ -5,26 +5,19 @@ import androidx.lifecycle.ViewModel
 import com.example.domain.entities.BasketItem
 import com.example.domain.entities.Product
 import com.example.domain.entities.AppData
+import com.example.fooddelivery.ui.base.BaseProductViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductCardViewModel @Inject constructor() : ViewModel() {
-
-    fun getProductsFilterList(): MutableList<Product> {
-        return AppData.productsFilterList
-    }
-
-    fun getCurrentProduct(id: Int): Product {
-        return getProductsFilterList().first { product: Product -> product.id == id }
-    }
+class ProductCardViewModel @Inject constructor() : BaseProductViewModel() {
 
     fun addProductOnBasket(product: Product) {
         var add = 0
         if (AppData.basketList.value!!.isNotEmpty()) {
             AppData.basketList.value!!.forEach {
                 if (it.product == product) {
-                    it.count.postValue(it.count.value!! + 1)
+                    it.count.value = it.count.value!! + 1
                     add += 1
                 }
             }

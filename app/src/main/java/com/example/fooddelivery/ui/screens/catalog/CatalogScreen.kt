@@ -34,7 +34,6 @@ import com.example.fooddelivery.ui.elements.FoodLazyColumn
 import com.example.fooddelivery.ui.navigation.NavigationComponents
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogCategoryViewModel
 import com.example.fooddelivery.ui.screens.catalog.view_models.CatalogProductViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun CatalogScreen(
